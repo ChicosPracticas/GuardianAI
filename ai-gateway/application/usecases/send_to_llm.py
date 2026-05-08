@@ -1,6 +1,7 @@
 from collections.abc import AsyncGenerator
 
 from domain.value_objects import AnonymizedText
+from domain.value_objects.TokenUsage import TokenUsage
 from ..ports.language_model import LanguageModel
 from ..ports.audit_log import AuditLog
 from domain.entities.llm_request import LLMRequest
@@ -46,8 +47,10 @@ class SendToLLM:
         request.mark_sent()
         finish_reason = "unknown"
 
+        usage = TokenUsage()
+
         try:
-            async for chunk in self._language_model.stream(all_messages, model):
+            async for chunk in self._language_model.stream(all_messages, model, usage):
                 yield chunk
 
             finish_reason = "stop"
@@ -57,8 +60,8 @@ class SendToLLM:
                 id=str(uuid.uuid4()),
                 request_id=request.id,
                 model=model,
-                prompt_tokens=0,
-                completion_tokens=0,
+                prompt_tokens=usage.prompt_tokens,
+                completion_tokens=usage.completion_tokens,
                 finish_reason=finish_reason,
                 completed_at=datetime.now(UTC)
             )
