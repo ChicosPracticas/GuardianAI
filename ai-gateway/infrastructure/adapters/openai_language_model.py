@@ -1,7 +1,8 @@
 from openai import AsyncOpenAI
 from openai.types.responses import EasyInputMessageParam
 from openai import RateLimitError, APIConnectionError, APIStatusError
-from typing import List, Literal, cast, AsyncGenerator
+from typing import List, Literal, cast
+from collections.abc import AsyncGenerator
 
 from application.ports import LanguageModel
 from domain.value_objects import Message

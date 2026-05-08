@@ -1,4 +1,4 @@
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
 from domain.value_objects import AnonymizedText
 from ..ports.language_model import LanguageModel
